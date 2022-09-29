@@ -46,13 +46,15 @@ class PinCodeTextField extends StatefulWidget {
   final Duration blinkDuration;
 
   /// returns the current typed text in the fields
-  final ValueChanged<String>? onChanged;
+  final ValueChanged<String> onChanged;
 
   /// returns the typed text when all pins are set
   final ValueChanged<String>? onCompleted;
 
   /// returns the typed text when user presses done/next action on the keyboard
   final ValueChanged<String>? onSubmitted;
+
+  final bool? onClear;
 
   /// the style of the text, default is [ fontSize: 20, fontWeight: FontWeight.bold]
   final TextStyle? textStyle;
@@ -201,6 +203,9 @@ class PinCodeTextField extends StatefulWidget {
   /// Enable auto unfocus
   final bool autoUnfocus;
 
+  final bool isError;
+
+
   PinCodeTextField({
     Key? key,
     required this.appContext,
@@ -211,7 +216,7 @@ class PinCodeTextField extends StatefulWidget {
     this.obscuringWidget,
     this.blinkWhenObscuring = false,
     this.blinkDuration = const Duration(milliseconds: 500),
-    this.onChanged,
+    required this.onChanged,
     this.onCompleted,
     this.backgroundColor,
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
@@ -257,6 +262,8 @@ class PinCodeTextField extends StatefulWidget {
     this.textGradient,
     this.readOnly = false,
     this.autoUnfocus = true,
+    required this.isError,
+    this.onClear=true,
 
     /// Default for [AutofillGroup]
     this.onAutoFillDisposeAction = AutofillContextAction.commit,
@@ -448,6 +455,12 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
 
       var currentText = _textEditingController!.text;
 
+      if(widget.enabled && currentText.length==0 && widget.isError){
+        if(widget.onClear!){
+          _focusNode!.unfocus();
+        }
+      }
+
       if (widget.enabled && _inputList.join("") != currentText) {
         if (currentText.length >= widget.length) {
           if (widget.onCompleted != null) {
@@ -462,7 +475,7 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
 
           if (widget.autoDismissKeyboard) _focusNode!.unfocus();
         }
-        widget.onChanged?.call(currentText);
+        widget.onChanged(currentText);
       }
 
       _setTextToInput(currentText);
@@ -532,16 +545,6 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
     return relevantInActiveColor;
   }
 
-  List<BoxShadow>? _getBoxShadowFromIndex(int index) {
-    if (_selectedIndex == index) {
-      return _pinTheme.activeBoxShadows;
-    } else if (_selectedIndex > index) {
-      return _pinTheme.inActiveBoxShadows;
-    }
-
-    return [];
-  }
-
   Widget _renderPinField({
     @required int? index,
   }) {
@@ -594,6 +597,22 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
     }
     if (((_selectedIndex == index) ||
             (_selectedIndex == index + 1 && index + 1 == widget.length)) &&
+        _focusNode!.hasFocus) {
+      return _pinTheme.selectedFillColor;
+    } else if (_selectedIndex > index) {
+      return _pinTheme.activeFillColor;
+    }
+    return _pinTheme.inactiveFillColor;
+  }
+
+
+
+  Color _getBoxShadowColorFromIndex(int index) {
+    if (!widget.enabled) {
+      return primary_1;
+    }
+    if (((_selectedIndex == index) ||
+        (_selectedIndex == index + 1 && index + 1 == widget.length)) &&
         _focusNode!.hasFocus) {
       return _pinTheme.selectedFillColor;
     } else if (_selectedIndex > index) {
@@ -774,7 +793,6 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
           ),
           scrollPadding: widget.scrollPadding,
           readOnly: widget.readOnly,
-          obscureText: widget.obscureText,
         ),
       ),
     );
@@ -851,10 +869,18 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
                 color: widget.enableActiveFill
                     ? _getFillColorFromIndex(i)
                     : Colors.transparent,
-                boxShadow: (_pinTheme.activeBoxShadows != null ||
-                        _pinTheme.inActiveBoxShadows != null)
-                    ? _getBoxShadowFromIndex(i)
-                    : widget.boxShadows,
+                // boxShadow: widget.boxShadows,
+                boxShadow: [
+                  widget.isError?
+                  BoxShadow(
+                    offset: const Offset(0, 0),
+                    color: red_1,
+                    spreadRadius: 1,
+                  ):
+                  _selectedIndex == i
+                      ? widget.boxShadows!.first:
+                      BoxShadow(color: primary_1,spreadRadius: 0)
+                ],
                 shape: _pinTheme.shape == PinCodeFieldShape.circle
                     ? BoxShape.circle
                     : BoxShape.rectangle,
@@ -866,10 +892,14 @@ class _PinCodeTextFieldState extends State<PinCodeTextField>
                           width: _pinTheme.borderWidth,
                         ),
                       )
-                    : Border.all(
+                    : widget.isError?
+                Border.all(
                         color: _getColorFromIndex(i),
                         width: _pinTheme.borderWidth,
-                      ),
+                      ):Border.all(
+                  color: primary_1,
+                  width: _pinTheme.borderWidth,
+                ),
               ),
               child: Center(
                 child: AnimatedSwitcher(
