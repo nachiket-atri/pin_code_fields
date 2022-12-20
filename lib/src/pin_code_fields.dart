@@ -929,9 +929,16 @@ class _PinCodeTextFieldState extends State<PinCodeTextField> with TickerProvider
         CupertinoDialogAction(
           child: Text(_dialogConfig.affirmativeText!),
           onPressed: () {
-            _textEditingController!.text = pastedText;
+            RegExp _numeric = RegExp(r'[0-9]');
+            if (_numeric.hasMatch(pastedText)) {
+              _textEditingController!.text = pastedText;
+            }
             Navigator.of(context, rootNavigator: true).pop();
           },
+          // onPressed: () {
+          //   _textEditingController!.text = pastedText;
+          //   Navigator.of(context, rootNavigator: true).pop();
+          // },
         ),
       ]);
     } else {
@@ -945,9 +952,16 @@ class _PinCodeTextFieldState extends State<PinCodeTextField> with TickerProvider
         TextButton(
           child: Text(_dialogConfig.affirmativeText!),
           onPressed: () {
-            _textEditingController!.text = pastedText;
+            RegExp _numeric = RegExp(r'[0-9]');
+            if (_numeric.hasMatch(pastedText)) {
+              _textEditingController!.text = pastedText;
+            }
             Navigator.of(context, rootNavigator: true).pop();
           },
+          // onPressed: () {
+          //   _textEditingController!.text = pastedText;
+          //   Navigator.of(context, rootNavigator: true).pop();
+          // },
         ),
       ]);
     }
