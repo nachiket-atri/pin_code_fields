@@ -680,18 +680,6 @@ class _PinCodeTextFieldState extends State<PinCodeTextField> with TickerProvider
                   style: TextStyle(
                     color: Theme.of(context).textTheme.button!.color,
                   ),
-                  children: [
-                    TextSpan(
-                      text: formattedPastedText,
-                      style: widget.pastedTextStyle ?? defaultPastedTextStyle,
-                    ),
-                    TextSpan(
-                      text: "?",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.button!.color,
-                      ),
-                    ),
-                  ],
                 ),
               ),
               actions: _getActionButtons(formattedPastedText),
@@ -705,18 +693,6 @@ class _PinCodeTextFieldState extends State<PinCodeTextField> with TickerProvider
                 text: TextSpan(
                   text: _dialogConfig.dialogContent,
                   style: TextStyle(color: Theme.of(context).textTheme.button!.color),
-                  children: [
-                    TextSpan(
-                      text: formattedPastedText,
-                      style: widget.pastedTextStyle ?? defaultPastedTextStyle,
-                    ),
-                    TextSpan(
-                      text: " ?",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.button!.color,
-                      ),
-                    )
-                  ],
                 ),
               ),
               actions: _getActionButtons(formattedPastedText),
