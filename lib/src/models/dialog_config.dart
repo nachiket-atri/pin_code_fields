@@ -15,6 +15,7 @@ class DialogConfig {
 
   /// The default dialog theme, should it be iOS or other(including web and Android)
   final Platform platform;
+
   DialogConfig._internal({
     this.dialogContent,
     this.dialogTitle,
@@ -24,19 +25,20 @@ class DialogConfig {
   });
 
   factory DialogConfig(
-      {String? affirmativeText,
-      String? dialogContent,
-      String? dialogTitle,
-      String? negativeText,
-      Platform? platform}) {
+      {String? affirmativeText, String? dialogContent, String? dialogTitle, String? negativeText, Platform? platform}) {
     return DialogConfig._internal(
-      affirmativeText: affirmativeText == null ? "Paste" : affirmativeText,
-      dialogContent: dialogContent == null
-          ? "Do you want to paste this code "
-          : dialogContent,
-      dialogTitle: dialogTitle == null ? "Paste Code" : dialogTitle,
-      negativeText: negativeText == null ? "Cancel" : negativeText,
-      platform: platform == null ? Platform.other : platform,
+      affirmativeText: "Paste",
+      // affirmativeText: affirmativeText == null ? "Paste" : affirmativeText,
+      dialogContent: "Do you want to paste this code ?",
+      // dialogContent == null
+      //     ? "Do you want to paste this code "
+      //     : dialogContent,
+      dialogTitle: "Paste Code",
+      // dialogTitle: dialogTitle == null ? "Paste Code" : dialogTitle,
+      negativeText: "Cancel",
+      // negativeText: negativeText == null ? "Cancel" : negativeText,
+      platform: Platform.other,
+      // platform: platform == null ? Platform.other : platform,
     );
   }
 }
