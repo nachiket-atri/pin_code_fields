@@ -505,7 +505,7 @@ class _PinCodeTextFieldState extends State<PinCodeTextField> with TickerProvider
       _focusNode!.dispose();
       // if (!kReleaseMode) {
       //   print(
-      //       "*** Disposing _textEditingController and _focusNode, To disable this feature please set autoDisposeControllers = false***");
+      //       "* Disposing _textEditingController and _focusNode, To disable this feature please set autoDisposeControllers = false***");
       // }
     }
 
